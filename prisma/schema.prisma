@@ -14,10 +14,6 @@ datasource db {
     url      = env("DATABASE_URL")
 }
 
-model Example {
-    id String @id @default(cuid())
-}
-
 // Necessary for Next auth
 model Account {
     id                String  @id @default(cuid())
@@ -46,13 +42,21 @@ model Session {
 }
 
 model User {
-    id            String    @id @default(cuid())
+    id            String             @id @default(cuid())
     name          String?
-    email         String?   @unique
+    email         String?            @unique
     emailVerified DateTime?
+    username      String?            @unique
+    password      String?
+    role          UserPermissionRole @default(USER)
     image         String?
     accounts      Account[]
     sessions      Session[]
+}
+
+enum UserPermissionRole {
+    USER
+    ADMIN
 }
 
 model VerificationToken {
