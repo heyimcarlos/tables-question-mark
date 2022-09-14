@@ -8,12 +8,13 @@ import { comparePassword, ErrorCode } from "../../../lib/auth";
 import { env } from "../../../env/server.mjs";
 
 export const authOptions: NextAuthOptions = {
-  // Include user.id on session
   callbacks: {
-    session({ session, user }) {
-      if (session.user) {
-        session.user.id = user.id;
+    // Include user.id on session
+    async session({ session, token }) {
+      if (session.user && token.sub) {
+        session.user.id = token.sub;
       }
+
       return session;
     },
   },
@@ -23,9 +24,10 @@ export const authOptions: NextAuthOptions = {
     CredentialsProvider({
       name: "Credentials",
       credentials: {
-        username: { label: "Username", type: "text", placeholder: "John Doe" },
-        password: { label: "Password", type: "password", placeholder: "********" },
+        username: { label: "Username", type: "text" },
+        password: { label: "Password", type: "password" },
       },
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       async authorize(credentials, _req) {
         if (!credentials) {
           console.log("credentials are missing");
@@ -55,10 +57,11 @@ export const authOptions: NextAuthOptions = {
     }),
     // ...add more providers here
   ],
-  debug: env.NODE_ENV === "development",
-  pages: {
-    signIn: "/auth/signin",
+  session: {
+    strategy: "jwt",
   },
+  debug: env.NODE_ENV === "development",
+  secret: env.NEXTAUTH_SECRET,
 };
 
 export default NextAuth(authOptions);

@@ -3,17 +3,30 @@ import { Fragment } from "react";
 import { Popover, Transition } from "@headlessui/react";
 import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
 import Image from "next/image";
-import { signIn } from "next-auth/react";
+import { signOut, useSession } from "next-auth/react";
 import LoginDialog from "@/components/SignInDialog";
+import Link from "next/link";
 
-const navigation: [] = [
-  // { name: "Product", href: "#" },
-  // { name: "Features", href: "#" },
-  // { name: "Marketplace", href: "#" },
-  // { name: "Company", href: "#" },
-];
+// const navigation: [] = [
+// { name: "Product", href: "#" },
+// { name: "Features", href: "#" },
+// { name: "Marketplace", href: "#" },
+// { name: "Company", href: "#" },
+// ];
+
+const SignOutButton = () => (
+  <button
+    type="button"
+    className="inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-indigo-600 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:text-sm"
+    onClick={() => signOut()}
+  >
+    Cerrar sesión
+  </button>
+);
 
 const Navbar = () => {
+  const { status } = useSession();
+
   return (
     <div className="relative pt-6 pb-16 sm:pb-24">
       <Popover>
@@ -51,12 +64,12 @@ const Navbar = () => {
             </div> */}
             <div className="hidden md:absolute md:inset-y-0 md:right-0 md:flex md:items-center md:justify-end">
               <span className="inline-flex rounded-md shadow">
-                <LoginDialog />
+                {status === "authenticated" ? <SignOutButton /> : <LoginDialog />}
               </span>
             </div>
           </nav>
         </div>
-
+        {/* Mobile */}
         <Transition
           as={Fragment}
           enter="duration-150 ease-out"
@@ -90,15 +103,13 @@ const Navbar = () => {
                   </a>
                 ))}
               </div> */}
-              <button
-                // href="#"
-                onClick={() =>
-                  signIn("credentials", { callbackUrl: "http://localhost:3000/dashboard" })
-                }
-                className="block w-full bg-gray-50 px-5 py-3 text-center font-medium text-indigo-600 hover:bg-gray-100"
-              >
-                Iniciar sesión
-              </button>
+              <div className="block w-full bg-gray-50 px-5 py-3 text-center font-medium text-indigo-600 hover:bg-gray-100">
+                {status === "authenticated" ? (
+                  <Link href="/auth/signout">Cerrar sesión</Link>
+                ) : (
+                  <Link href="/auth/signin">Iniciar sesión</Link>
+                )}
+              </div>
             </div>
           </Popover.Panel>
         </Transition>
