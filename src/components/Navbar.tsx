@@ -7,12 +7,10 @@ import { signOut, useSession } from "next-auth/react";
 import LoginDialog from "@/components/SignInDialog";
 import Link from "next/link";
 
-// const navigation: [] = [
-// { name: "Product", href: "#" },
-// { name: "Features", href: "#" },
-// { name: "Marketplace", href: "#" },
-// { name: "Company", href: "#" },
-// ];
+const navigation = [
+  { name: "Tablero", href: "/tablero" },
+  { name: "Nuevo Paciente", href: "/nuevo-paciente" },
+];
 
 const SignOutButton = () => (
   <button
@@ -37,12 +35,14 @@ const Navbar = () => {
           >
             <div className="flex flex-1 items-center md:absolute md:inset-y-0 md:left-0">
               <div className="flex w-full items-center justify-between md:w-auto">
-                <a href="#">
-                  <span className="sr-only">Your Company</span>
-                  <div className="relative w-40 h-16 ">
-                    <Image src="/logo.png" alt="logo" layout="fill" />
-                  </div>
-                </a>
+                <Link href="/">
+                  <a>
+                    <span className="sr-only">Your Company</span>
+                    <div className="relative w-40 h-16 ">
+                      <Image src="/logo.png" alt="logo" layout="fill" />
+                    </div>
+                  </a>
+                </Link>
                 <div className="-mr-2 flex items-center md:hidden">
                   <Popover.Button className="inline-flex items-center justify-center rounded-md bg-gray-50 p-2 text-gray-400 hover:bg-gray-100 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500">
                     <span className="sr-only">Open main menu</span>
@@ -51,17 +51,19 @@ const Navbar = () => {
                 </div>
               </div>
             </div>
-            {/* <div className="hidden md:flex md:space-x-10">
-              {navigation.map((item) => (
-                <a
-                  key={item.name}
-                  href={item.href}
-                  className="font-medium text-gray-500 hover:text-gray-900"
-                >
-                  {item.name}
-                </a>
-              ))}
-            </div> */}
+            {status === "authenticated" && (
+              <div className="hidden md:flex md:space-x-10">
+                {navigation.map((item) => (
+                  <a
+                    key={item.name}
+                    href={item.href}
+                    className="font-medium text-gray-500 hover:text-gray-900"
+                  >
+                    {item.name}
+                  </a>
+                ))}
+              </div>
+            )}
             <div className="hidden md:absolute md:inset-y-0 md:right-0 md:flex md:items-center md:justify-end">
               <span className="inline-flex rounded-md shadow">
                 {status === "authenticated" ? <SignOutButton /> : <LoginDialog />}
@@ -92,17 +94,19 @@ const Navbar = () => {
                   </Popover.Button>
                 </div>
               </div>
-              {/* <div className="px-2 pt-2 pb-3">
-                {navigation.map((item) => (
-                  <a
-                    key={item.name}
-                    href={item.href}
-                    className="block rounded-md px-3 py-2 text-base font-medium text-gray-700 hover:bg-gray-50 hover:text-gray-900"
-                  >
-                    {item.name}
-                  </a>
-                ))}
-              </div> */}
+              {status === "authenticated" && (
+                <div className="px-2 pt-2 pb-3">
+                  {navigation.map((item) => (
+                    <a
+                      key={item.name}
+                      href={item.href}
+                      className="block rounded-md px-3 py-2 text-base font-medium text-gray-700 hover:bg-gray-50 hover:text-gray-900"
+                    >
+                      {item.name}
+                    </a>
+                  ))}
+                </div>
+              )}
               <div className="block w-full bg-gray-50 px-5 py-3 text-center font-medium text-indigo-600 hover:bg-gray-100">
                 {status === "authenticated" ? (
                   <Link href="/auth/signout">Cerrar sesión</Link>

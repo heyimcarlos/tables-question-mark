@@ -9,7 +9,7 @@ const LogoutPage = () => {
   return <div></div>;
 };
 
-export async function getServerSideProps(ctx: GetServerSidePropsContext) {
+export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
   ctx.res.setHeader(
     "Set-Cookie",
     "next-auth.session-token=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;"
@@ -18,6 +18,6 @@ export async function getServerSideProps(ctx: GetServerSidePropsContext) {
   return {
     props: {},
   };
-}
+};
 
 export default LogoutPage;

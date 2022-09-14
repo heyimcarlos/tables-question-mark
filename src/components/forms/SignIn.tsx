@@ -31,7 +31,7 @@ const SignInForm = () => {
     if (!res) {
       setErrorMessage("Ha occurido un error al iniciar sesión");
     } else if (!res.error) {
-      router.push("/dashboard");
+      router.push("/tablero");
     } else {
       setErrorMessage("Usuario o contraseña incorrectos");
     }
