@@ -19,7 +19,7 @@ const Home: NextPageWithLayout = () => {
             <span className="block text-indigo-600 xl:inline">de pacientes</span>
           </h1>
           <p className="mx-auto mt-3 max-w-md text-base text-gray-500 sm:text-lg md:mt-5 md:max-w-3xl md:text-xl">
-            Pagina utilitaria para el manejo de pacientes del Dr. Ricardo Del Monte
+            Pagina utilitaria para el manejo de pacientes del Dr. Ricardo Delmonte
           </p>
           <div className="mx-auto mt-5 max-w-md sm:flex sm:justify-center md:mt-8">
             <div className="rounded-md shadow">
