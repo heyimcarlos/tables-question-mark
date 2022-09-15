@@ -1,12 +1,18 @@
-import { createRouter } from "./context";
+import { createProtectedRouter, createRouter } from "./context";
 import { z } from "zod";
 import { hashPassword } from "@/lib/auth";
 
-export const userRouter = createRouter().mutation("update", {
+const publicUserRouter = createRouter().mutation("update", {
   input: z.object({
     username: z.string(),
   }),
   async resolve({ input, ctx }) {
+    // const a = await ctx.prisma.user.findFirst({
+    //   where: {
+    //     id: 1,
+    //   },
+    // });
+    // return a;
     await ctx.prisma.user.update({
       where: {
         username: input.username,
@@ -17,3 +23,14 @@ export const userRouter = createRouter().mutation("update", {
     });
   },
 });
+
+const loggedInUserRouter = createProtectedRouter().query("records", {
+  async resolve({ ctx }) {
+    const records = await ctx.prisma.patientRecord.findMany();
+    return records;
+  },
+});
+
+export const userRouter = createRouter()
+  .merge("public.", publicUserRouter)
+  .merge(loggedInUserRouter);

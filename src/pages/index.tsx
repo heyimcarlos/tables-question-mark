@@ -2,8 +2,10 @@ import Head from "next/head";
 import Link from "next/link";
 import AppLayout from "../components/layouts/AppLayout";
 import { NextPageWithLayout } from "@/pages/_app";
+// import { trpc } from "@/utils/trpc";
 
 const Home: NextPageWithLayout = () => {
+  // const mutation = trpc.useMutation("user.update");
   return (
     <>
       <Head>
@@ -28,6 +30,9 @@ const Home: NextPageWithLayout = () => {
                   Nuevo Paciente
                 </a>
               </Link>
+              {/* <button onClick={() => mutation.mutate({ username: "ricardodelmonte" })}>
+                hash ricardos pw
+              </button> */}
             </div>
           </div>
         </div>
