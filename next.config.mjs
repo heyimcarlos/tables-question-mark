@@ -1,3 +1,5 @@
+import { withSuperjson } from "next-superjson";
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { env } from "./src/env/server.mjs";
 
 /**
@@ -9,7 +11,7 @@ import { env } from "./src/env/server.mjs";
  * @constraint {{import('next').NextConfig}}
  */
 function defineNextConfig(config) {
-  return config;
+  return withSuperjson()(config);
 }
 
 export default defineNextConfig({

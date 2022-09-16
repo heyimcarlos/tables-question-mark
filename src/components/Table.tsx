@@ -1,5 +1,6 @@
 import { ChevronUpIcon, ChevronDownIcon } from "@heroicons/react/24/solid";
 import { PatientRecord } from "@prisma/client";
+import Link from "next/link";
 import React, { useState } from "react";
 import { formatPhoneNumber } from "react-phone-number-input";
 
@@ -11,7 +12,7 @@ type SortBy = "name" | "phone" | "email" | "createdAt";
 type SortDirection = "asc" | "desc";
 
 const Table = ({ patients }: Props) => {
-  const [patientsList, setPatientsList] = useState<PatientRecord[]>(patients);
+  const [patientsList, setPatientsList] = useState<PatientRecord[]>(() => patients);
   const [order, setOrder] = useState<SortDirection>("desc");
   const [sortField, setSortField] = useState<SortBy>("createdAt");
 
@@ -109,9 +110,11 @@ const Table = ({ patients }: Props) => {
                   })}
                 </td>
                 <td className="whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6">
-                  <a href="#" className="text-indigo-600 hover:text-indigo-900">
-                    Abrir<span className="sr-only">, {patient.name}</span>
-                  </a>
+                  <Link href={`/historial-medico/${patient.id}`}>
+                    <a className="text-indigo-600 hover:text-indigo-900">
+                      Abrir<span className="sr-only">, {patient.name}</span>
+                    </a>
+                  </Link>
                 </td>
               </tr>
             ))}

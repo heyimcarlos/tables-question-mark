@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
-import { useRouter } from "next/router";
 import Image from "next/image";
 import PhoneInput, { isValidPhoneNumber } from "react-phone-number-input";
 import "react-phone-number-input/style.css";
@@ -54,7 +53,6 @@ const PatientForm = () => {
     formState: { errors },
   } = useForm<FormValues>({
     resolver: zodResolver(FormSchema),
-    // mode: "all",
   });
 
   const mutation = trpc.useMutation("patient.public.create-record", {
@@ -70,9 +68,6 @@ const PatientForm = () => {
 
   const onSubmit: SubmitHandler<FormValues> = async (values) => {
     mutation.mutate(values);
-
-    // push to success page
-    // router.push("/exito");
   };
 
   const toggleModal = () => {
