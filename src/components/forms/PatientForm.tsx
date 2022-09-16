@@ -37,10 +37,11 @@ const ForwardedPhoneInput = React.forwardRef<HTMLInputElement>((props, ref) => (
 
 ForwardedPhoneInput.displayName = "Input";
 
-const ErroMessage = (message: string) => <span className="text-sm text-red-500">{message}</span>;
+const ErrorMessage: React.FC<{ message: string }> = ({ message }) => {
+  return <span className="text-sm text-red-500">{message}</span>;
+};
 
 const PatientForm = () => {
-  const router = useRouter();
   const [errorMessage, setErrorMessage] = useState("");
   const [show, setShow] = useState(false);
   const utils = trpc.useContext();
@@ -50,7 +51,6 @@ const PatientForm = () => {
     handleSubmit,
     control,
     reset,
-    clearErrors,
     formState: { errors },
   } = useForm<FormValues>({
     resolver: zodResolver(FormSchema),
@@ -147,7 +147,7 @@ const PatientForm = () => {
                       autoComplete="given-name"
                       className="block w-full max-w-lg rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:max-w-xs sm:text-sm"
                     />
-                    {errors.name?.message && ErroMessage(errors.name.message)}
+                    {errors.name?.message && <ErrorMessage message={errors.name.message} />}
                   </div>
                 </div>
 
@@ -168,7 +168,7 @@ const PatientForm = () => {
                       autoComplete="family-name"
                       className="block w-full max-w-lg rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:max-w-xs sm:text-sm"
                     />
-                    {errors.lastName?.message && ErroMessage(errors.lastName.message)}
+                    {errors.lastName?.message && <ErrorMessage message={errors.lastName.message} />}
                   </div>
                 </div>
 
@@ -196,7 +196,7 @@ const PatientForm = () => {
                       autoComplete="email"
                       className="block w-full max-w-lg rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:max-w-xs sm:text-sm"
                     />
-                    {errors.email?.message && ErroMessage(errors.email.message)}
+                    {errors.email?.message && <ErrorMessage message={errors.email.message} />}
                   </div>
                 </div>
 
@@ -224,7 +224,7 @@ const PatientForm = () => {
                         />
                       )}
                     />
-                    {errors.phone?.message && ErroMessage(errors.phone.message)}
+                    {errors.phone?.message && <ErrorMessage message={errors.phone.message} />}
                   </div>
                 </div>
 
@@ -245,12 +245,13 @@ const PatientForm = () => {
                       autoComplete="street-address"
                       className="block w-full max-w-lg rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
                     />
-                    {errors.address?.message && ErroMessage(errors.address.message)}
+                    {errors.address?.message && <ErrorMessage message={errors.address.message} />}
                   </div>
                 </div>
               </div>
             </div>
           </div>
+          {errorMessage && <ErrorMessage message={errorMessage} />}
 
           <div className="pt-5">
             <div className="flex justify-end">
