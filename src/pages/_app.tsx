@@ -2,19 +2,30 @@
 import { httpBatchLink } from "@trpc/client/links/httpBatchLink";
 import { loggerLink } from "@trpc/client/links/loggerLink";
 import { withTRPC } from "@trpc/next";
+import { NextPage } from "next";
 import { SessionProvider } from "next-auth/react";
-import type { AppType } from "next/dist/shared/lib/utils";
+import { AppProps } from "next/app";
+import React from "react";
 import superjson from "superjson";
-import type { AppRouter } from "../server/router";
+import type { AppRouter } from "@/server/router";
 import "../styles/globals.css";
 
-const MyApp: AppType = ({
-  Component,
-  pageProps: { session, ...pageProps },
-}) => {
+export type NextPageWithLayout<P = Record<string, unknown>, IP = P> = NextPage<P, IP> & {
+  layout: React.FC<{ children: React.ReactNode }>;
+};
+
+type AppPropsWithLayout = AppProps & {
+  Component: NextPageWithLayout;
+};
+
+const MyApp = ({ Component, pageProps: { session, ...pageProps } }: AppPropsWithLayout) => {
+  const Layout = Component.layout ?? React.Fragment;
+
   return (
     <SessionProvider session={session}>
-      <Component {...pageProps} />
+      <Layout>
+        <Component {...pageProps} />
+      </Layout>
     </SessionProvider>
   );
 };
@@ -26,7 +37,7 @@ const getBaseUrl = () => {
 };
 
 export default withTRPC<AppRouter>({
-  config({ ctx }) {
+  config({}) {
     /**
      * If you want to use SSR, you need to use the server's full URL
      * @link https://trpc.io/docs/ssr

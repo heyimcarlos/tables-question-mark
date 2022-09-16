@@ -1,40 +1,70 @@
 // src/server/router/context.ts
 import * as trpc from "@trpc/server";
+import { Maybe } from "@trpc/server";
 import * as trpcNext from "@trpc/server/adapters/next";
+import { GetServerSidePropsContext } from "next";
 import { Session } from "next-auth";
 import { getServerAuthSession } from "../../server/common/get-server-auth-session";
 import { prisma } from "../db/client";
 
-type CreateContextOptions = {
-  session: Session | null;
-};
+type CreateContextOptions = trpcNext.CreateNextContextOptions | GetServerSidePropsContext;
 
-/** Use this helper for:
- * - testing, where we dont have to Mock Next.js' req/res
- * - trpc's `createSSGHelpers` where we don't have req/res
- **/
-export const createContextInner = async (opts: CreateContextOptions) => {
+async function getUserFromSession({
+  session,
+}: {
+  session: Maybe<Session>;
+  req: CreateContextOptions["req"];
+}) {
+  if (!session?.user?.id) {
+    return null;
+  }
+
+  const user = await prisma.user.findUnique({
+    where: {
+      id: session.user.id,
+    },
+    select: {
+      id: true,
+      name: true,
+      username: true,
+      email: true,
+      role: true,
+    },
+  });
+
+  // some hacks to make sure `username` and `email` are never inferred as `null`
+  if (!user) {
+    return null;
+  }
+
+  const { email, username } = user;
+  if (!email) {
+    return null;
+  }
+  // const avatar = user.avatar || defaultAvatarSrc({ email });
+
   return {
-    session: opts.session,
-    prisma,
+    ...user,
+    email,
+    username,
   };
-};
+}
 
 /**
  * This is the actual context you'll use in your router
  * @link https://trpc.io/docs/context
  **/
-export const createContext = async (
-  opts: trpcNext.CreateNextContextOptions,
-) => {
-  const { req, res } = opts;
-
-  // Get the session from the server using the unstable_getServerSession wrapper function
+export const createContext = async ({ req, res }: CreateContextOptions) => {
+  // for API-response caching see https://trpc.io/docs/caching
   const session = await getServerAuthSession({ req, res });
 
-  return await createContextInner({
+  const user = await getUserFromSession({ session, req });
+
+  return {
     session,
-  });
+    user,
+    prisma,
+  };
 };
 
 type Context = trpc.inferAsyncReturnType<typeof createContext>;

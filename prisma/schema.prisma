@@ -14,14 +14,10 @@ datasource db {
     url      = env("DATABASE_URL")
 }
 
-model Example {
-    id String @id @default(cuid())
-}
-
 // Necessary for Next auth
 model Account {
-    id                String  @id @default(cuid())
-    userId            String
+    id                Int     @id @default(autoincrement())
+    userId            Int
     type              String
     provider          String
     providerAccountId String
@@ -38,21 +34,31 @@ model Account {
 }
 
 model Session {
-    id           String   @id @default(cuid())
+    id           Int      @id @default(autoincrement())
     sessionToken String   @unique
-    userId       String
+    userId       Int
     expires      DateTime
     user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model User {
-    id            String    @id @default(cuid())
+    id            Int                @id @default(autoincrement())
     name          String?
-    email         String?   @unique
+    email         String             @unique
     emailVerified DateTime?
+    username      String             @unique
+    password      String?
+    role          UserPermissionRole @default(USER)
     image         String?
+    createdAt     DateTime           @default(now())
+    updatedAt     DateTime           @updatedAt
     accounts      Account[]
     sessions      Session[]
+}
+
+enum UserPermissionRole {
+    USER
+    ADMIN
 }
 
 model VerificationToken {
@@ -61,4 +67,16 @@ model VerificationToken {
     expires    DateTime
 
     @@unique([identifier, token])
+}
+
+model PatientRecord {
+    id        Int      @id @default(autoincrement())
+    name      String
+    lastName  String
+    email     String
+    phone     String
+    address   String
+    image     String?
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
 }
