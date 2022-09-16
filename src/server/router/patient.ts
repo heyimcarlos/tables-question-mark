@@ -8,12 +8,6 @@ const publicPatientRouter = createRouter()
       username: z.string(),
     }),
     async resolve({ input, ctx }) {
-      // const a = await ctx.prisma.user.findFirst({
-      //   where: {
-      //     id: 1,
-      //   },
-      // });
-      // return a;
       await ctx.prisma.user.update({
         where: {
           username: input.username,

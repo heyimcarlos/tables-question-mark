@@ -43,16 +43,18 @@ const PatientForm = () => {
   const router = useRouter();
   const [errorMessage, setErrorMessage] = useState("");
   const [show, setShow] = useState(false);
+  const utils = trpc.useContext();
 
   const {
     register,
     handleSubmit,
     control,
     reset,
+    clearErrors,
     formState: { errors },
   } = useForm<FormValues>({
     resolver: zodResolver(FormSchema),
-    mode: "all",
+    // mode: "all",
   });
 
   const mutation = trpc.useMutation("patient.public.create-record", {
@@ -60,7 +62,9 @@ const PatientForm = () => {
       setErrorMessage(error.message);
     },
     onSuccess: () => {
-      setShow(true);
+      toggleModal();
+      reset();
+      utils.invalidateQueries(["user.records"]);
     },
   });
 
@@ -71,13 +75,12 @@ const PatientForm = () => {
     // router.push("/exito");
   };
 
-  const closeModal = () => {
-    setShow(false);
-    reset();
+  const toggleModal = () => {
+    setShow(!show);
   };
 
   const modal = (
-    <Modal open={show} onClose={closeModal}>
+    <Modal open={show} onClose={toggleModal}>
       <div>
         <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-green-100">
           <CheckIcon className="h-6 w-6 text-green-600" aria-hidden="true" />
@@ -97,7 +100,7 @@ const PatientForm = () => {
         <button
           type="button"
           className="inline-flex w-full justify-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 sm:text-sm"
-          onClick={closeModal}
+          onClick={toggleModal}
         >
           Cerrar
         </button>
