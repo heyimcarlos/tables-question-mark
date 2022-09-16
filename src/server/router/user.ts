@@ -20,7 +20,11 @@ const publicUserRouter = createRouter().mutation("update", {
 
 const loggedInUserRouter = createProtectedRouter().query("records", {
   async resolve({ ctx }) {
-    const records = await ctx.prisma.patientRecord.findMany();
+    const records = await ctx.prisma.patientRecord.findMany({
+      orderBy: {
+        createdAt: "desc",
+      },
+    });
     return records;
   },
 });

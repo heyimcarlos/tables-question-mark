@@ -1,4 +1,5 @@
 import AppLayout from "@/components/layouts/AppLayout";
+import Table from "@/components/Table";
 import { getServerAuthSession } from "@/server/common/get-server-auth-session";
 import { trpc } from "@/utils/trpc";
 import { GetServerSidePropsContext } from "next";
@@ -15,18 +16,8 @@ const Tablero: NextPageWithLayout = () => {
   if (!data) return null;
 
   return (
-    <div>
-      Tablero, {session?.user?.name}
-      <div>
-        {data.map((record) => (
-          <div key={record.id} className="flex w-full items-center justify-around border">
-            <p>{record.name}</p>
-            <p>{record.email}</p>
-            <p>{record.lastName}</p>
-            <p>{record.phone}</p>
-          </div>
-        ))}
-      </div>
+    <div className="relative mx-2 sm:px-6 lg:px-8">
+      <Table patients={data} />
     </div>
   );
 };
